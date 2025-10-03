@@ -1,0 +1,48 @@
+%% Coral CT Mini Main script file
+
+clear; close all force; clc;
+
+%% Create UI figure 
+
+UI = uifigure('Name','Coral CT v2.1','WindowState','Maximized','Color',[0.3 0.3 0.3]);
+
+sn = 1;
+%mfile = matfile('/Volumes/mariaSSD/BelizeMAT/1856.mat','Writable',true);
+
+% Change scene number based on forward back buttons(?)
+while sn ~= 0
+    
+    % Create grid for multiple panels:
+    uigrid = uigridlayout(UI,[100 100]);
+
+    switch sn
+        case 1
+            % Load screen to import core, save as .mat file, and clip to ROI
+            [sn,mfile] = GUI_LoadData_v5(UI,uigrid);
+            %[sn,mfile] = GUI_LoadDataBundle_v5(UI,uigrid);
+        case 2
+            % Load screen to import coral standards, calibrate density.
+            [sn,mfile] = GUI_StandardCurve_v7(UI,uigrid,mfile);
+        case 3
+            % Load screen to ID bands in core.
+            %[s,sn] = GUI_BandID_v5(UI,uigrid,sn,mfile);
+            [s,sn] = GUI_BandIDOpts_v7(UI,uigrid,mfile);
+        case 4
+            % Load screen to adjust polyp identification and maximize tracking.
+            [s,sn] = GUI_BandDensExt_v6(UI,uigrid,mfile);
+        case 5
+            % Process stress bands
+            [s,sn] = GUI_SliceAnalysis_v7(UI,uigrid,mfile);
+        case 0
+            close(UI);
+    end
+end
+
+% Load screen to calculate calcification
+
+%%
+% clear; close all force; clc;
+% UI = uifigure('Name','Coral CT v2.1','WindowState','Maximized','Color',[0.3 0.3 0.3]);
+% uigrid = uigridlayout(UI,[100 100]);
+% mfile = matfile('/Volumes/mariaSSD/MajuroMAT/1688.mat','Writable',true);
+% [s,sn] = GUI_BandIDOpts_v5(UI,uigrid,mfile);
