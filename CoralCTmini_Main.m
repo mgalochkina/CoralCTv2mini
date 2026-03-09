@@ -1,10 +1,10 @@
-%% Coral CT Mini Main script file
+%% CoralCTv2Mini Main script file
 
 clear; close all force; clc;
 
 %% Create UI figure 
 
-UI = uifigure('Name','Coral CT v2.1','WindowState','Maximized','Color',[0.3 0.3 0.3]);
+UI = uifigure('Name','Coral CT v2.1 Mini','WindowState','Maximized','Color',[0.3 0.3 0.3]);
 
 sn = 1;
 
@@ -36,3 +36,4 @@ while sn ~= 0
             close(UI);
     end
 end
+
