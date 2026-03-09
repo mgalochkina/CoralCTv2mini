@@ -172,6 +172,7 @@ function [sn,mfile] = GUI_StandardCurve(UI,uigrid,mfile)
 
         % Look up density values for standards:
         % note for external users: left column is a standard #, right column is known standard density (g/cm^3)
+        % CHANGE THIS LINE IF USING DIFFERENT STANDARDS!
         StandardDensities = [269 0.8095; 270 0.9927; 225 1.0887; 167 1.1655; 237 1.3550; ...
             220 1.2794; 214 1.3862; 221 1.5374; 235 1.3221];
 
