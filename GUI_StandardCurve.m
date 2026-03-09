@@ -171,28 +171,12 @@ function [sn,mfile] = GUI_StandardCurve(UI,uigrid,mfile)
         end
 
         % Look up density values for standards:
-        %StandardDensities = readmatrix('Standard_Densities_Original.xlsx');
+        % note for external users: left column is a standard #, right column is known standard density (g/cm^3)
         StandardDensities = [269 0.8095; 270 0.9927; 225 1.0887; 167 1.1655; 237 1.3550; ...
             220 1.2794; 214 1.3862; 221 1.5374; 235 1.3221];
 
         % Assign each measured density to the table if the standard has not been used before:
         isAssigned = false(size(StandardsSub,1));
-        % for j = 1:size(StandardsSub,1)
-        %     % If the Density variable has been added to the table (1st time only) AND Density is a NaN:
-        %     if any(~isnan(Standards.Density))
-        %         %if any("Density" == string(Standards.Properties.VariableNames))
-        %         if StandardsSub.Density(j) == 0
-        %             StandardsSub.Density(j) = StandardDensities(StandardDensities(:,1)==str2double(StandardsSub.CoreID(j)),2);
-        %             isAssigned(j) = true;
-        %         else
-        %             % Density is already defined
-        %         end
-        %     else
-        %         % First time setup - Density column has not yet been added to table.
-        %         StandardsSub.Density(j) = StandardDensities(StandardDensities(:,1)==str2double(StandardsSub.CoreID(j)),2);
-        %         isAssigned(j) = true;
-        %     end
-        % end
 
         for j = 1:size(StandardsSub, 1)
             if ~any(ismember(StandardsSub.Properties.VariableNames, 'Density')) || any(isnan(StandardsSub.Density))
@@ -228,31 +212,6 @@ function [sn,mfile] = GUI_StandardCurve(UI,uigrid,mfile)
         % Plot Core based on standards:
         PlotCore;
     end
-
-    % Function to parse go next behavior
-    % function GoNext(src,event)
-    % 
-    %     variableInfo = who(mfile);
-    % 
-    %     % Prompt user to identify detection threshold if none exists
-    %     if ismember('CoralPixelDistribution',variableInfo) && ~isempty(mfile.CoralPixelDistribution)
-    %         s2(3).button(1).Value = true;
-    %         sn = 3;
-    %         mfile.CoralPixelDistribution = CoralPixelDistribution;
-    %     else
-    %         output = uiconfirm(UI,"Detection Threshold not saved. Save the current threshold?",'No Detection Threshold',"Options",["Save Current","Go Back"],'DefaultOption',1,'CancelOption',2);
-    %     end
-    % 
-    %     switch output
-    %         case "Save Current"
-    %             % wait triggers based on value for button 3, use as dummy
-    %             s2(3).button(1).Value = true;
-    %             sn = 3;
-    %             mfile.CoralPixelDistribution = CoralPixelDistribution;
-    %         case "Go Back"
-    %             return
-    %     end
-    % end
 
     % Function to read .mat files standards are stored in, and calculate whole-core HU
     function ReadStandards(ids)
@@ -412,11 +371,6 @@ function [sn,mfile] = GUI_StandardCurve(UI,uigrid,mfile)
         s2(4).axis(1).XTick = [];
         imXsec = repmat(mat2gray(XsecD),[1 1 3]);
         image(s2(4).axis(1),'XData',ReconDims.Y.*metadata.PixelSpacing(1),'YData',ReconDims.Z*metadata.PixelZSpacing(1),'CData',imXsec)
-%         imshow(s2(4).axis(1),ReconDims.Y.*metadata.PixelSpacing(1), ReconDims.Z*metadata.PixelZSpacing(1),rgbxsec); hold on 
-%         imagesc(s2(4).axis(1), ReconDims.Y.*metadata.PixelSpacing(1), ReconDims.Z*metadata.PixelZSpacing(1), Xsec);
-%         colormap(s2(4).axis(1),'bone')
-%         c = colorbar(s2(4).axis(1));
-%         c.Label.String = 'Density (g/cm^3)';
         xlim(s2(4).axis(1), [min(ReconDims.Y) max(ReconDims.Y)].*metadata.PixelSpacing(1))
         axis(s2(4).axis(1),'image')
         s2(4).axis(1).YDir = 'Reverse';
@@ -503,25 +457,6 @@ function [sn,mfile] = GUI_StandardCurve(UI,uigrid,mfile)
                                                        'MinPeakHeight',sum(counts_norm)./1e3,...
                                                        'MinPeakProminence',sum(counts_norm)./1e4);
 
-        % function MSE = minSig(Sigma)
-        %     sigma0 = repmat(Sigma,1,numel(peaklocs));
-        %     b0 = [peakvals./sum(peakvals).*sum(counts_norm)
-        %           log(peaklocs)-sigma0.^2;
-        %           %repmat(sigma0,1,length(peaklocs))];
-        %           sigma0];
-        %     b0 = reshape(b0,[],1);
-        %     options = statset('RobustWgtFun',[]);
-        %     [beta,R,J,COVB,MSE] = nlinfit(centers',counts_norm',@(b,x)nlognfit(b,x),b0,options);
-        % end
-        % 
-        % function MSE = minSig2(Sigma)
-        %     b0 = [peakvals./sum(peakvals).*sum(counts_norm)
-        %         log(peaklocs) - Sigma.^2;
-        %         Sigma];
-        %     b0 = reshape(b0,[],1);
-        %     options = statset('RobustWgtFun',[]);
-        %     [beta,R,J,COVB,MSE] = nlinfit(centers', counts_norm', @(b,x)nlognfit(b,x), b0, options);
-        % end
 
         % find best starting value:
         if s2(2).cbx(1).Value == 1 % Montastrea core
@@ -614,13 +549,6 @@ function [sn,mfile] = GUI_StandardCurve(UI,uigrid,mfile)
             if j == ReconDims.Z(end)
                 close(pbar)
             end 
-
-            % pinc = floor(size(ReconDims.Z,2)*ppct);
-            % if mod(count,pinc) == 0
-            %     pbar.Value = min(pbar.Value + ppct,1);
-            % elseif j == ReconDims.Z(end)
-            %     close(pbar)
-            % end
 
             % parse to WCD
             WCD(count,1) = ReconDims.Z(count) * metadata.PixelZSpacing;
