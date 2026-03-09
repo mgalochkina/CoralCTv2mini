@@ -7,7 +7,6 @@ clear; close all force; clc;
 UI = uifigure('Name','Coral CT v2.1','WindowState','Maximized','Color',[0.3 0.3 0.3]);
 
 sn = 1;
-%mfile = matfile('/Volumes/mariaSSD/BelizeMAT/1856.mat','Writable',true);
 
 % Change scene number based on forward back buttons(?)
 while sn ~= 0
@@ -28,7 +27,7 @@ while sn ~= 0
             %[s,sn] = GUI_BandID_v5(UI,uigrid,sn,mfile);
             [s,sn] = GUI_BandIDOpts(UI,uigrid,mfile);
         case 4
-            % Load screen to adjust polyp identification and maximize tracking.
+            % Load screen to identify band density and extension
             [s,sn] = GUI_BandDensExt(UI,uigrid,mfile);
         case 5
             % Process stress bands
@@ -37,12 +36,3 @@ while sn ~= 0
             close(UI);
     end
 end
-
-% Load screen to calculate calcification
-
-%%
-% clear; close all force; clc;
-% UI = uifigure('Name','Coral CT v2.1','WindowState','Maximized','Color',[0.3 0.3 0.3]);
-% uigrid = uigridlayout(UI,[100 100]);
-% mfile = matfile('/Volumes/mariaSSD/MajuroMAT/1688.mat','Writable',true);
-% [s,sn] = GUI_BandIDOpts_v5(UI,uigrid,mfile);
